@@ -1,7 +1,10 @@
 from fyers_apiv3 import fyersModel
-import webbrowser as web
-import datetime as dt
-import os
+
+import seleniumbase as sb
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import pyotp
 
 
 """
@@ -28,10 +31,13 @@ def access_token(client_id,secret_key, redirect_uri,auth_code):
 
 
 class initial():
-    def __init__(self,client_id,secret_key, redirect_uri):
+    def __init__(self,client_id,secret_key, redirect_uri,key:str,phoneno:str,TOTPseckey:str):
         self.client_id = client_id
         self.secret_key = secret_key
         self.redirect_uri = redirect_uri
+        self.four_digit_key = key
+        self.phoneno = phoneno
+        self.TOTPseckey = TOTPseckey
         self.response_type = "code"  
         self.state = "sample_state"
         self.grant_type = "authorization_code"
@@ -56,10 +62,42 @@ class initial():
 
         # Generate the auth code using the session model
         response = session.generate_authcode()
-        web.open_new_tab(response)
-        with open(r"C:\Users\gurus\Desktop\programming\stonks\django_test\auth.txt",'r+') as f:
-            self.auth_code = f.readline()
-            f.truncate(0)
+        drive = sb.Driver(uc=True)
+        drive.get(response)
+        time.sleep(2)
+        #clicking on phone number box
+        phno = drive.find_element(By.XPATH,'/html/body/section[1]/div[3]/div[3]/form/div[1]/div/input')
+        phno.click()
+        #sending phone number details
+        phno.send_keys(self.phoneno)
+
+        #clicking on continue
+        drive.find_element(By.XPATH,'/html/body/section[1]/div[3]/div[3]/form/button').click()
+        time.sleep(3)
+        #sending TOTP 
+        otp = pyotp.TOTP(self.TOTPseckey).now()
+        for i in range(1,7):
+            drive.find_element(By.XPATH,f'/html/body/section[6]/div[3]/div[3]/form/div[3]/input[{i}]').send_keys(otp[i-1])
+
+        #pressing continue
+        drive.find_element(By.XPATH,'/html/body/section[6]/div[3]/div[3]/form/button').click()
+        time.sleep(3)
+        #sending id
+
+        for i in range(1,5):
+            drive.find_element(By.XPATH,f'/html/body/section[8]/div[3]/div[3]/form/div[2]/input[{i}]').send_keys(self.four_digit_key[i-1])
+        drive.find_element(By.XPATH,'/html/body/section[8]/div[3]/div[3]/form/button').click()
+        try:
+            drive.find_element(By.XPATH,'/html/body/div/div/div/div/div/div[3]/div/div[3]/label').click()
+            drive.find_element(By.XPATH,'/html/body/div/div/div/div/div/div[4]/div/a[2]/span').click()
+        except Exception as e:
+            pass
+        time.sleep(2)
+        url = drive.current_url
+        self.auth_code = url.split('&')[2].split('=')[1]
+
+
+        drive.close()
         print('successfully obtained auth_code!')
        
         """outputs access token """
@@ -84,7 +122,7 @@ class initial():
 if __name__ == '__main__':
     client_id = "8VRFT7VQY2-100"
     secret_key = "BX697QBUL1"
-    redirect_uri = 'http://127.0.0.1:8000/eg/'#"https://trade.fyers.in/api-login/redirect-uri/index.html"
+    redirect_uri = 'https://www.google.com/'#"https://trade.fyers.in/api-login/redirect-uri/index.html"
     state = "sample_state"
     connect = initial(client_id=client_id,secret_key=secret_key,redirect_uri=redirect_uri)
     connect.get_access_token()
