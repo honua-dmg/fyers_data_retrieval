@@ -121,6 +121,9 @@ class Depth(_Data):
                     'ask_order1','ask_order2','ask_order3','ask_order4','ask_order5']
         self.data_type = 'DepthUpdate'
         self.initDirFiles()
+        def onmessage(self, message):
+            print("Response:", message['ltp'],' ',message['symbol'])
+            self.save_files(message)
 
 
 class Symbol(_Data):
@@ -132,6 +135,10 @@ class Symbol(_Data):
         self.data_type = 'SymbolUpdate'
         self._litemode=litemode
         self.initDirFiles()
+    
+    def onmessage(self, message):
+        print("Response:", message['ltp'],' ',message['symbol'])
+        self.save_files(message)
 
 
 if __name__ =="__main__":
