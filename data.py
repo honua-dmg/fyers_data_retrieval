@@ -122,7 +122,7 @@ class Depth(_Data):
         self.data_type = 'DepthUpdate'
         self.initDirFiles()
         def onmessage(self, message):
-            print("Response:", message['ltp'],' ',message['symbol'])
+            print("DEPTH:",message['symbol'])
             self.save_files(message)
 
 
@@ -137,7 +137,7 @@ class Symbol(_Data):
         self.initDirFiles()
     
     def onmessage(self, message):
-        print("Response:", message['ltp'],' ',message['symbol'])
+        print("Symbol:",message['symbol'])
         self.save_files(message)
 
 
