@@ -1,6 +1,9 @@
 #secrets
 secrets.txt
 
+#testing
+./testing.ipynb
+./testing.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

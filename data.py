@@ -1,5 +1,6 @@
 
 from fyers_apiv3.FyersWebsocket import data_ws
+
 import datetime as dt
 import os
 
@@ -14,7 +15,7 @@ class _Data():
         self.data_type = None # defined in subclasses
         self.keys = None
         if directory == None:
-            self.dir = r'/Users/gurusai/Desktop/data'
+            self.dir = r'/Users/gurusai/data'
         else:
             self.dir = directory
         #datetime in YYYY-MM-DD format
@@ -44,6 +45,8 @@ class _Data():
                 f.write(key+',')
             f.write('time')
             f.write('\n')
+
+
 
 
     def onmessage(self,message):
