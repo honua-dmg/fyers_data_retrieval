@@ -50,6 +50,8 @@ class _Data():
 
 
     def onmessage(self,message):
+        if self._connected == False:
+            self.fyers.unsubscribe(symbols=self.stonks, data_type=self.data_type)
         print("Response:", message)
         self.save_files(message)
 
@@ -122,7 +124,7 @@ class Depth(_Data):
         self.data_type = 'DepthUpdate'
         self.initDirFiles()
         def onmessage(self, message):
-            print("DEPTH:",message['symbol'])
+            print("RESPONSE:",message)
             self.save_files(message)
 
 
@@ -137,7 +139,7 @@ class Symbol(_Data):
         self.initDirFiles()
     
     def onmessage(self, message):
-        print("Symbol:",message['symbol'])
+        print("RESPONSE:",message)
         self.save_files(message)
 
 
