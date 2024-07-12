@@ -163,7 +163,8 @@ class Login():
         
        
 class AutoLogin(Login):
-    def __init__(self,creds:dict):
+    def __init__(self,file_loc,data_type):
+        creds = get_creds(file_loc=file_loc,data_type=data_type)
         super().__init__(client_id=creds['client_id'],
                          secret_key=creds['secret_key'],
                          redirect_uri=creds['redirect_uri'],
@@ -183,7 +184,7 @@ if __name__ == '__main__':
     secret_key = "BX697QBUL1"
     redirect_uri = 'https://www.google.com/'#"https://trade.fyers.in/api-login/redirect-uri/index.html"
     state = "sample_state"
-    connect = Initial(client_id=client_id,secret_key=secret_key,redirect_uri=redirect_uri)
+    connect = Login(client_id=client_id,secret_key=secret_key,redirect_uri=redirect_uri)
     connect.get_access_token()
     #print(connect.access_token)
 
