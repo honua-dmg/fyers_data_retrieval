@@ -27,9 +27,21 @@ def access_token(client_id,secret_key, redirect_uri,auth_code):
         return NotImplementedError('bro you fucked up somewhere')
    
 """
+def get_creds(file_loc,data_type):
+    creds = {}
+    with open(file_loc,'r') as f:
+        txt = f.readlines()
+        for i in range(len(txt)):
+            if data_type in txt[i]:
+                creds['TOTPseckey'] = txt[i+1].split('=')[1].strip("\n,")
+                creds['key'] = txt[i+2].split('=')[1].strip("\n,")
+                creds['phoneno'] = txt[i+3].split('=')[1].strip("\n,")
+                creds['client_id'] = txt[i+4].split('=')[1].strip("\n,")
+                creds['secret_key'] = txt[i+5].split('=')[1].strip("\n,")
+                creds['redirect_uri'] = txt[i+6].split('=')[1].strip("\n,")  
+    return creds
 
-
-class Initial():
+class Login():
     def __init__(self,client_id,secret_key, redirect_uri,key=None,phoneno=None,TOTPseckey=None):
         self.client_id = client_id
         self.secret_key = secret_key
@@ -150,6 +162,20 @@ class Initial():
             drive.quit()
         
        
+class AutoLogin(Login):
+    def __init__(self,creds:dict):
+        super().__init__(client_id=creds['client_id'],
+                         secret_key=creds['secret_key'],
+                         redirect_uri=creds['redirect_uri'],
+                         key=creds['key'],
+                         phoneno=creds['phoneno'],
+                         TOTPseckey=creds['TOTPseckey'])
+
+#client_id,secret_key, redirect_uri,key=None,phoneno=None,TOTPseckey=None
+
+
+
+
 
 
 if __name__ == '__main__':

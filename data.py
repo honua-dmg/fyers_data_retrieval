@@ -28,8 +28,10 @@ class _Data():
             #check if directories exist
             file_symbol = ''.join(['-' if x == ":" else x for x in stonk])
             if not os.path.exists(f'{self.dir}/{file_symbol}'): #checking to see if file path exists
-                os.mkdir(f'{self.dir}/{file_symbol}')           #we will make the file path if it doesnt :)
-       
+                try:
+                    os.mkdir(f'{self.dir}/{file_symbol}')           #we will make the file path if it doesnt :)
+                except Exception:
+                    print('file already exists')
             #check if file with type and datestamp is initialised
             file_path = f'{self.dir}/{file_symbol}/{self.data_type[:4]}-{self.india_date}.csv'
             self.initcols(file_path)
