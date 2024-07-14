@@ -1,6 +1,6 @@
 
 from fyers_apiv3.FyersWebsocket import data_ws
-
+import time 
 import datetime as dt
 import os
 
@@ -52,10 +52,9 @@ class _Data():
 
 
     def onmessage(self,message):
-        if self._connected == False:
-            self.fyers.unsubscribe(symbols=self.stonks, data_type=self.data_type)
         print("Response:", message)
-        self.save_files(message)
+        if self._connected:
+            self.save_files(message)
 
     def onerror(self,message):
         print("Error:", message)
@@ -113,6 +112,8 @@ class _Data():
             self._connected=False # not having this seems to cause some bugs (i.e it wont unsubscribe)
 
 
+
+
    
 class Depth(_Data):
     def __init__(self,access_token,stonks,directory=None):
@@ -130,6 +131,7 @@ class Depth(_Data):
             self.save_files(message)
 
 
+
 class Symbol(_Data):
     def __init__(self,access_token,stonks,directory=None,litemode=False):
         super().__init__(access_token=access_token,stonks=stonks,directory=directory)
@@ -144,7 +146,19 @@ class Symbol(_Data):
         print("RESPONSE:",message)
         self.save_files(message)
 
+# for testing purposes DELETE LATER or STREAMLINE 
+def func(Data_class,auth,stonks,wait_time):
+    symbol = Data_class(auth,stonks)
+    symbol.connect()
+    symbol.subscribe()
+    time.sleep(wait_time)
+    symbol.unsubscribe()
+
+    
+
 
 if __name__ =="__main__":
     test = Depth('lalala',['hello'])
     print('helloss')
+
+
