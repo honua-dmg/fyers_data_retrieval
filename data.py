@@ -1,6 +1,6 @@
 
 from fyers_apiv3.FyersWebsocket import data_ws
-
+import time 
 import datetime as dt
 import os
 
@@ -28,8 +28,10 @@ class _Data():
             #check if directories exist
             file_symbol = ''.join(['-' if x == ":" else x for x in stonk])
             if not os.path.exists(f'{self.dir}/{file_symbol}'): #checking to see if file path exists
-                os.mkdir(f'{self.dir}/{file_symbol}')           #we will make the file path if it doesnt :)
-       
+                try:
+                    os.mkdir(f'{self.dir}/{file_symbol}')           #we will make the file path if it doesnt :)
+                except Exception:
+                    print('file already exists')
             #check if file with type and datestamp is initialised
             file_path = f'{self.dir}/{file_symbol}/{self.data_type[:4]}-{self.india_date}.csv'
             self.initcols(file_path)
@@ -51,7 +53,8 @@ class _Data():
 
     def onmessage(self,message):
         print("Response:", message)
-        self.save_files(message)
+        if self._connected:
+            self.save_files(message)
 
     def onerror(self,message):
         print("Error:", message)
@@ -109,6 +112,8 @@ class _Data():
             self._connected=False # not having this seems to cause some bugs (i.e it wont unsubscribe)
 
 
+
+
    
 class Depth(_Data):
     def __init__(self,access_token,stonks,directory=None):
@@ -121,6 +126,10 @@ class Depth(_Data):
                     'ask_order1','ask_order2','ask_order3','ask_order4','ask_order5']
         self.data_type = 'DepthUpdate'
         self.initDirFiles()
+        def onmessage(self, message):
+            print("RESPONSE:",message)
+            self.save_files(message)
+
 
 
 class Symbol(_Data):
@@ -132,8 +141,24 @@ class Symbol(_Data):
         self.data_type = 'SymbolUpdate'
         self._litemode=litemode
         self.initDirFiles()
+    
+    def onmessage(self, message):
+        print("RESPONSE:",message)
+        self.save_files(message)
+
+# for testing purposes DELETE LATER or STREAMLINE 
+def func(Data_class,auth,stonks,wait_time):
+    symbol = Data_class(auth,stonks)
+    symbol.connect()
+    symbol.subscribe()
+    time.sleep(wait_time)
+    symbol.unsubscribe()
+
+    
 
 
 if __name__ =="__main__":
     test = Depth('lalala',['hello'])
     print('helloss')
+
+
