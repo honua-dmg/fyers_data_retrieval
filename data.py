@@ -147,7 +147,7 @@ class Symbol(_Data):
         self.save_files(message)
 
 # for testing purposes DELETE LATER or STREAMLINE 
-def func(Data_class,auth,stonks,wait_time):
+def collect(Data_class,auth:str,stonks:list,wait_time:int):
     symbol = Data_class(auth,stonks)
     symbol.connect()
     symbol.subscribe()

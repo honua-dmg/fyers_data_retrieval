@@ -85,8 +85,6 @@ class Login():
             grant_type=self.grant_type
         )
        
-
-
         # Generate the auth code using the session model
         response = session.generate_authcode()
         try:
@@ -172,6 +170,12 @@ class AutoLogin(Login):
                          phoneno=creds['phoneno'],
                          TOTPseckey=creds['TOTPseckey'])
 
+
+def auth_codes(file_loc):
+    sym_auth = AutoLogin(file_loc=file_loc,data_type='symbol').login_and_get_auth()
+    dep_auth = AutoLogin(file_loc=file_loc,data_type='depth').login_and_get_auth()
+
+    return {'depth':dep_auth,'symbol':sym_auth}
 #client_id,secret_key, redirect_uri,key=None,phoneno=None,TOTPseckey=None
 
 
